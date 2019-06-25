@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 var express = require("express");
 var bodyParser = require("body-parser");
 var mongoose = require("mongoose"),
@@ -15,15 +17,17 @@ var commentRoutes = require("./routes/comments");
 var campgroundRoutes = require("./routes/campgrounds");
 var authRoutes = require("./routes/index");
 
-mongoose.connect(process.env.DATABASEURL,{useNewUrlParser: true});
+mongoose.connect("mongodb://localhost:27017/yelp_camp2",{useNewUrlParser: true});
 // mongoose.connect("mongodb+srv://Zuma:pasvord@yelpcamp-56hrq.mongodb.net/test?retryWrites=true&w=majority",{useNewUrlParser: true});
 mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
 
 
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.static(__dirname + "/public"));
 app.set("view engine","ejs");
 app.use(methodOverride("_method"));
+app.locals.moment = require("moment");
 // seedDB();
 
 //PASSSPORT CONF
