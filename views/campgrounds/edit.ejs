@@ -1,27 +1,32 @@
 <% include ../partials/header %>
 
 
-<div class="row">
-    <h1 class="text-center">Edit <%= campground.name %></h1>
-    <div style="width:30%;margin:30px auto;">
+<div class="row justify-content-center">
+    <div class="col-12 mb-3">
+        <h1 class="text-center">Edit <%= campground.name %></h1>
+    </div>
+    <div class="col-5">
         <form action="/campgrounds/<%= campground._id %>?_method=PUT" method="POST" enctype="multipart/form-data">
             <div class="form-group">
-                <input class="form-control" type="text" name="name" value="<%= campground.name %>">
+                <label for="name">Name of the Camp</label>
+                <input class="form-control" type="text" name="name" value="<%= campground.name %>" id="name">
             </div>
             <div class="form-group">
-                <input class="form-control" type="number" name="price" value="<%= campground.price %>" step="0.01" min="0">
+                <label for="price">Price per night</label>
+                <input class="form-control" type="number" name="price" value="<%= campground.price %>" step="0.01" min="0" id="price">
             </div>
             <div class="form-group">
                 <label for="location">Location</label>
                 <input class="form-control" type="text" name="location" id="location" value="<%= campground.location %>">
             </div>
             <div class="form-group">
-                <label for="image">Image</label>
-                <input type="file" name="image" id="image" accept="image/*">
+                <label for="dsc">Description</label>
+                <input class="form-control" type="text" name="description" value="<%= campground.description %>" id="dsc">
             </div> 
-            <div class="form-group">
-                <input class="form-control" type="text" name="description" value="<%= campground.description %>">
-            </div> 
+            <div class="custom-file mb-3">
+                <label for="image" class="custom-file-label">Image</label>
+                <input class="custom-file-input" type="file" name="image" id="image" accept="image/*" required>
+            </div>
             <div class="form-group">
                 <button class="btn btn-block btn-lg btn-primary">Submit!</button>
             </div>
@@ -29,5 +34,12 @@
         <a class="btn btn-md btn-warning" href="/campgrounds">Go Back</a>
     </div>
 </div>
+
+<script>
+    $(".custom-file-input").on("change", function() {
+        var fileName = $(this).val().split("\\").pop();
+        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+</script>
 <% include ../partials/footer %>
     

@@ -70,35 +70,47 @@ router.get("/",function(req,res) {
     });    
 
 router.get("/new",middleware.isLoggedIn,function(req, res) {
-    res.render("campgrounds/new");
+    var check = false;
+    res.render("campgrounds/new",{check:check});
     });
 //CREATE CAMPGROUND
 router.post("/",middleware.isLoggedIn ,upload.single('image'),function(req,res) {
-    var name = req.body.name;
-    cloudinary.v2.uploader.upload(req.file.path, function(err , result) {
+    geocoder.geocode(req.body.location,function(err,data) {
         if (err) {
-            req.flash("error",err);
-            return res.redirect("back");
+                req.flash("error",err.message);
+                return res.redirect("back");
+                }
+        if (!data.length) {
+            check = true;
+            var resendCampground = {name: req.body.name,price: req.body.price,dsc: req.body.description,location: req.body.location};
+            req.flash("error","Location not found");
+            return res.render("campgrounds/new",{campground: resendCampground,check: check});
             }
         // add cloudinary url for the image to the campground object under image property
         // req.body.image = result.secure_url;
         // req.body.imageId = result.public_id;
-        var image = result.secure_url;
-        var imageId = result.public_id;
+        var check = false;
+        var name = req.body.name;
         var price = req.body.price;
         var dsc = req.body.description;
         var author = {
             id: req.user._id,
             username: req.user.username
             };
-        geocoder.geocode(req.body.location,function(err,data) {
+        cloudinary.v2.uploader.upload(req.file.path, function(err , result) {
+            if (err) {
+                req.flash("error",err.message);
+                return res.redirect("back");
+                }        
             if (err || !data.length) {
-                req.flash('error',err);
+                req.flash('error',err.message);
                 return res.redirect('back');
-                }
+                }  
             var lat = data[0].latitude;
             var lng = data[0].longitude;
             var location = data[0].formattedAddress;
+            var image = result.secure_url;
+            var imageId = result.public_id;
             var newCampground = {name: name,price: price,image: image,imageId: imageId,description: dsc,author:author,location: location,lng: lng,lat: lat};
             Campground.create(newCampground,function(err,newlyCreated){
                 if (err) {
@@ -107,7 +119,7 @@ router.post("/",middleware.isLoggedIn ,upload.single('image'),function(req,res) 
                     }
                 else {
                     res.redirect("/campgrounds/" + newlyCreated.id);
-                    }    
+                    }
                 });
             });   
         });    

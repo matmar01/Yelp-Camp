@@ -1,20 +1,27 @@
 <% include partials/header %>
 
 
-<div class="row">
-    <h1 class="text_align">Login</h1>
-    <div class="log_reg_form">
+<div class="row justify-content-center">
+    <div class="col-md-12 mb-3 text-center">
+        <h1>Login</h1>
+    </div>
+    <div class="col-xs-12 col-sm-6">
         <form action="/login" method="POST">
             <div class="form-group">
-                <input class="form-control" type="text" name="username" placeholder="Username">
+                <label for="username">Username</label>
+                <input class="form-control" type="text" name="username" placeholder="Username" id="username">
             </div>
             <div class="form-group">
-                <input class="form-control" type="passord" name="password" placeholder="Password">            
+                <label for="password">Username</label>
+                <input class="form-control" type="passord" name="password" placeholder="Password" id="password">            
             </div>
             <div class="form-group">
                 <input class="btn btn-lg btn-primary btn-block" type="submit" value="Login!">
             </div>
         </form>
+        <a href="/campgrounds" class="btn mt-2 pl-0">
+            Go back to the Homepage
+        </a>
     </div>
 </div>
 

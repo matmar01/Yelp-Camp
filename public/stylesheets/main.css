@@ -13,15 +13,16 @@
     }   
 #delete_form2 {
     display: inline;
-    }     
-.text_align {
-    text-align: center;
     }  
 .log_reg_form {
-    width: 30%;
+    width: 35%;
     margin: 25px auto;
     }    
 #map {
     height: 400px;
     width: 100%;
-    }  
+    }
+h4 {
+    margin: 0;
+    line-height: 1;
+    }    

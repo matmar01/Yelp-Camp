@@ -1,34 +1,38 @@
 <% include partials/header %>
 
 <div class="row">
-    <h1 class="text_align">Sign Up</h1>
+    <div class="col-md-12 text-center">
+        <h1 class="h3 mb-3 font-weight-normal">Please Register</h1>
+    </div>
     <div class="log_reg_form">
         <form action="/register" method="POST">
             <div class="form-group">
-                <label for="username">Username</label>
-                <input class="form-control" type="text" name="username" placeholder="Username">
+                <label for="username" class="sr-only">Username</label>
+                <input class="form-control" type="text" name="username" placeholder="Username" id="username">
             </div>
             <div class="form-group">
                 <label for="avatar">Avatar Url</label>
-                <input class="form-control" type="text" name="avatar" placeholder="Avatar URL">
+                <input class="form-control" type="text" name="avatar" placeholder="Avatar URL" id="avatar">
             </div>
             <div class="form-group">
                 <label for="email">E-mail</label>
-                <input class="form-control" type="email" name="email" placeholder="E-Mail">
+                <input class="form-control" type="email" name="email" placeholder="E-Mail" id="email">
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input class="form-control" type="passord" name="password" placeholder="Password">            
+                <input class="form-control" type="passord" name="password" placeholder="Password" id="password">            
             </div>
             <div class="form-group">
                 <label for="adminCode">Admin Code</label>
-                <input class="form-control" type="text" name="adminCode" placeholder="Admin code">
+                <input class="form-control" type="text" name="adminCode" placeholder="Admin code" id="adminCode">
             </div>
             <div class="form-group">
                 <input class="btn btn-lg btn-primary btn-block" type="submit" value="Sign Up!">
             </div>
         </form>
-        <a href="/campgrounds">Go Back</a>
+        <a href="/campgrounds" class="btn mt-1 mb-5 pl-0">
+            Go Back
+        </a>
     </div>
 </div>
 

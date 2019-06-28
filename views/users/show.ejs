@@ -3,26 +3,45 @@
 <div class="container">
     <div class="row">
         <div class="col-md-4">
-            <h1><%= user.username + " " + "the shit is here" %></h1>
-            <div class="thumbnail">
-                <img src="<%= user.avatar %>" alt="user profile photo">
-                <div class="caption">
-                    <a href="mailto:<%= user.email %>">user.email</a>
+            <div class="card">
+                <div class="card-header font-weight-bold">
+                    <%= user.username + "'s Profile page" %>
                 </div>
+                <div class="card">
+                    <img class="card-img justify-content-center" src="<%= user.avatar %>" alt="user profile photo">
+                    <div class="card-body">
+                        <!--<a href="mailto:<%= user.email %>">user.email</a>-->
+                        <div class="card-text">
+                            <p>Your verification e-mail<hr/>
+                            <%= user.email %></p>
+                        </div>
+                    </div>
+                </div> 
             </div>
-            <p>
-                Lorem Lipsum dolor si amet es pulchram orbitum.
-            </p>
         </div>
         <div class="col-md-8">
-            <h3><%= user.username %> Campgrounds</h3>
-            <ul>
-                <% campgrounds.forEach(function(campground) { %>
-                    <li><a href="campground/<%= campground.id %>"><%= campground.name %></a>
-                    <img src="<%= campground.image %>" alt="campground image"></li>
-                    <% }) %> 
-            </ul>
-            
+            <div class="card">
+                <div class="card-header">
+                    <h3><%= user.username %> Campgrounds</h3>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <% if (campgrounds.length) { %>
+                        <% campgrounds.forEach(function(campground) { %>
+                            <li class="list-group-item">
+                                <a class="btn btn-sm btn-primary" href="/campgrounds/<%= campground.id %>"><%= campground.name %></a>
+                                <a href="/campgrounds/<%= campground.id %>">
+                                    <img class="card-img" src="<%= campground.image %>" alt="campground image">
+                                </a>
+                            </li>
+                        <% })} else { %>
+                            <div class="card-header">
+                                You haven't posted any Campgrounds yet<hr/>
+                                You can't add a new Camp from this link<hr/>
+                                <a class="btn btn-lg btn-primary" href="/campgrounds/new">New Camp</a>
+                            </div>
+                        <% } %> 
+                </ul>
+            </div>
         </div>
     </div>
 </div>

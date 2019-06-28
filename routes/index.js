@@ -7,6 +7,7 @@ var nodemailer = require("nodemailer");
 var mg = require('nodemailer-mailgun-transport');
 var crypto = require("crypto");
 var passport = require("passport");
+var middleware = require("../middleware");
 
 router.get("/",function(req,res) {
     res.render("landing");
@@ -27,7 +28,7 @@ router.post("/register",function(req, res) {
             return res.redirect("register");
             }
         passport.authenticate("local")(req,res,function(){
-            req.flash("success","Welcome to Yelp camp"+ user.username + "!");
+            req.flash("success","Welcome to Yelp camp "+ user.username + "!");
             res.redirect("/campgrounds");
             });    
         });
@@ -69,7 +70,7 @@ router.post("/resetPassword",function(req,res,next) {
             },
         function(token,done) {
             User.findOne({email:req.body.email},function(err,user) {
-                if (!user) {
+                if (!user || err) {
                     req.flash("error","No account with this email was found!");
                     return res.redirect("/resetPassword");
                     }  
@@ -163,9 +164,9 @@ router.post("/resetPassword/:token",function(req,res) {
                         foundUser.save(function() {
                             req.logIn(foundUser,function(err) {
                                 done(err,foundUser);
-                                })                        
-                            })
-                        })                
+                                });                   
+                            });
+                        });           
                     }
                 else {
                     req.flash("error","Passwords do not match!");
@@ -197,12 +198,16 @@ router.post("/resetPassword/:token",function(req,res) {
                 });
             },
         function(err) {
+            if (err) {
+                req.flash("error",err.message);
+                return res.redirect('back');            
+                }
             res.redirect("/campgrounds");
             }    
         ]);
     });    
 //Users Profiles    
-router.get("/users/:id",function(req, res) {
+router.get("/users/:id",middleware.checkProfileOwnership,function(req, res) {
     User.findById(req.params.id,function(err,foundUser) {
         if (err) {
             req.flash("error","Something went wrong");
