@@ -10,17 +10,28 @@
                 <div class="card">
                     <img class="card-img justify-content-center" src="<%= user.avatar %>" alt="user profile photo">
                     <div class="card-body">
-                        <!--<a href="mailto:<%= user.email %>">user.email</a>-->
-                        <div class="card-text">
-                            <p>Your verification e-mail<hr/>
-                            <%= user.email %></p>
-                        </div>
+                        <% if(currentUser.username !== user.username) { %>
+                            <div class="card-text">
+                                <a href="mailto:<%= user.email %>">user.email</a>
+                            </div>   
+                            <hr/>
+                            <div class="d-flex justify-content-center">
+                                <a class="btn btn-secondary" href="/follow/<%= user.id %>">
+                                    Follow <%= user.username %>
+                                </a>
+                            </div>
+                        <% } else { %>
+                            <div class="card-text">
+                                <p>Your verification e-mail<hr/>
+                                <%= user.email %></p>
+                            </div>
+                        <% } %>
                     </div>
                 </div> 
             </div>
         </div>
         <div class="col-md-8">
-            <div class="card">
+            <div class="card mb-4">
                 <div class="card-header">
                     <h3><%= user.username %> Campgrounds</h3>
                 </div>
@@ -28,13 +39,24 @@
                     <% if (campgrounds.length) { %>
                         <% campgrounds.forEach(function(campground) { %>
                             <li class="list-group-item">
-                                <a class="btn btn-sm btn-primary" href="/campgrounds/<%= campground.id %>"><%= campground.name %></a>
-                                <a href="/campgrounds/<%= campground.id %>">
-                                    <img class="card-img" src="<%= campground.image %>" alt="campground image">
-                                </a>
+                                <div class="row">
+                                    <div class="col-12 col-lg-5 my-2">
+                                        <h4 class="card-header text-center">
+                                            <%= campground.name %>
+                                        </h4>
+                                        <p class="card-text">
+                                            <%= campground.description.split(" ").splice(0,25).join(" ") %>...
+                                        </p>
+                                    </div>
+                                    <div class="col-12 col-lg-7">
+                                        <a href="/campgrounds/<%= campground.id %>">
+                                            <img class="card-img" src="<%= campground.image %>" alt="campground image">
+                                        </a>
+                                    </div>
+                                </div>
                             </li>
                         <% })} else { %>
-                            <div class="card-header">
+                            <div class="card-header mb-3">
                                 You haven't posted any Campgrounds yet<hr/>
                                 You can't add a new Camp from this link<hr/>
                                 <a class="btn btn-lg btn-primary" href="/campgrounds/new">New Camp</a>

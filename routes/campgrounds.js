@@ -2,6 +2,8 @@ var express = require("express");
 var router = express.Router();
 var Campground = require("../models/campground");
 var Comment = require("../models/comment");
+var User = require("../models/user");
+var Notification = require("../models/notification");
 var middleware = require("../middleware");
 var NodeGeocoder = require('node-geocoder');
 var multer = require('multer');
@@ -97,30 +99,37 @@ router.post("/",middleware.isLoggedIn ,upload.single('image'),function(req,res) 
             id: req.user._id,
             username: req.user.username
             };
-        cloudinary.v2.uploader.upload(req.file.path, function(err , result) {
+        cloudinary.v2.uploader.upload(req.file.path,async function(err , result) {
             if (err) {
                 req.flash("error",err.message);
                 return res.redirect("back");
-                }        
-            if (err || !data.length) {
-                req.flash('error',err.message);
-                return res.redirect('back');
-                }  
-            var lat = data[0].latitude;
-            var lng = data[0].longitude;
-            var location = data[0].formattedAddress;
-            var image = result.secure_url;
-            var imageId = result.public_id;
-            var newCampground = {name: name,price: price,image: image,imageId: imageId,description: dsc,author:author,location: location,lng: lng,lat: lat};
-            Campground.create(newCampground,function(err,newlyCreated){
-                if (err) {
-                    req.flash("error", err);
-                    res.redirect("back");
-                    }
-                else {
-                    res.redirect("/campgrounds/" + newlyCreated.id);
-                    }
-                });
+                }
+            try {
+                var lat = data[0].latitude;
+                var lng = data[0].longitude;
+                var location = data[0].formattedAddress;
+                var image = result.secure_url;
+                var imageId = result.public_id;
+                var newCampground = {name: name,price: price,image: image,imageId: imageId,
+                description: dsc,author:author,location: location,lng: lng,lat: lat};
+                let newlyCreated = await Campground.create(newCampground);
+                let user = await User.findById(req.user._id).populate('followers').exec();
+                let newNotification = {
+                    username: req.user.username,
+                    campgroundId: newlyCreated.id
+                    };
+                for (const follower of user.followers) {
+                    let notification = await Notification.create(newNotification);  
+                    follower.notifications.push(notification);
+                    follower.save();
+                    }    
+                req.flash("success","New campground successfully created");    
+                return res.redirect("/campgrounds/" + newlyCreated.id);    
+                }
+            catch (err) {
+                req.flash("error",err.message);
+                return res.redirect("back");
+                } 
             });   
         });    
     });

@@ -44,8 +44,22 @@ passport.use(new localStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-app.use(function(req,res,next) {
+app.use(async function(req,res,next) {
     res.locals.currentUser = req.user;
+    if (req.user) {
+        try {
+            let user = await User.findById(req.user._id).populate("notifications",null,{isRead: false}).exec();
+            if (user.notifications) {
+                res.locals.notifications = user.notifications.reverse();      
+                }
+            else {
+                res.locals.notifications = [];            
+                }
+            }
+        catch(err) {
+            console.log(err.message);
+            }    
+        }   
     res.locals.error = req.flash("error");
     res.locals.success = req.flash("success");
     next();
@@ -59,3 +73,4 @@ app.use("/campgrounds",campgroundRoutes);
 app.listen(process.env.PORT, process.env.IP , function() {
     console.log("Yelp camp server started!!");
     });
+  

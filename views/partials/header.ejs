@@ -62,6 +62,24 @@
                             <a class="nav-link" href="/register">Sign Up</a>
                         </li>
                     <% } else { %>
+                        <li class="dropdown">
+                            <a class="btn btn-secondary dropdown-toggle" type="button" 
+                            id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Notifications 
+                                <span class="badge">
+                                    <%= notifications.length %>
+                                </span>
+                            </a>    
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="/notifications">View pas notifications</a>
+                                <% notifications.forEach(function(notification) { %>
+                                    <a class="dropdown-item" href="/notifications/<%= notification.id %>">
+                                        <%= notification.username %> created a new campground
+                                    </a>
+                                <% }); %>    
+                            </div>
+                        </li>
                         <li class="nav-item"><a class="nav-link" href="/users/<%= currentUser._id %>">Signed In As 
                             <%= currentUser.username %></a>
                         </li>

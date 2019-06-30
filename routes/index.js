@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 var User = require("../models/user");
 var Campground = require("../models/campground");
+var Notification = require("../models/notification");
 var async = require("async");
 var nodemailer = require("nodemailer");
 var mg = require('nodemailer-mailgun-transport');
@@ -207,7 +208,7 @@ router.post("/resetPassword/:token",function(req,res) {
         ]);
     });    
 //Users Profiles    
-router.get("/users/:id",middleware.checkProfileOwnership,function(req, res) {
+router.get("/users/:id",middleware.isLoggedIn,function(req, res) {
     User.findById(req.params.id,function(err,foundUser) {
         if (err) {
             req.flash("error","Something went wrong");
@@ -226,5 +227,52 @@ router.get("/users/:id",middleware.checkProfileOwnership,function(req, res) {
             }    
         });
     });
+//Notifications routes
+router.get("/follow/:id",middleware.isLoggedIn,async function(req, res) {
+    try {
+        let user = await User.findById(req.params.id);
+        user.followers.push(req.user._id);
+        user.save();
+        req.flash("success","You now follow " + user.username);
+        res.redirect("/users/" + req.params.id);
+        }
+    catch(err) {
+        req.flash("error",err.message);
+        res.redirect("back");
+        }    
+    });
+router.get("/notifications",middleware.isLoggedIn,async function(req, res) {
+    try {
+        let user = await User.findById(req.user._id).populate({
+            path: "notifications",
+            options: {
+                sort: { "_id" : -1}
+                }                
+            }).exec();
+        let allNotifications = user.notifications;
+        if (allNotifications) {
+            res.render("notifications/index",{allNotifications});
+            }
+        else {
+            res.render("notifications/index",{allNotifications: []});      
+            }    
+        }
+    catch(err) {
+        req.flash("error",err.message);
+        res.redirect("back");
+        }    
+    });   
+router.get("/notifications/:id",middleware.isLoggedIn,async function(req, res) {
+    try {
+        let notification = await Notification.findById(req.params.id);
+        notification.isRead = true;
+        notification.save();
+        res.redirect("/campgrounds/"+notification.campgroundId);
+        }
+    catch(err) {
+        req.flash("error",err.message);
+        res.redirect("back");    
+        }        
+    });    
 
 module.exports = router;    

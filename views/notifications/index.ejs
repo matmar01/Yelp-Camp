@@ -1,0 +1,23 @@
+<% include ../partials/header %> 
+
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1 class="display-4">Notifications</h1>
+    <p class="lead">Here you can see all of the past notifications.</p>
+  </div>
+</div>
+<div class="list-group">
+  <%if(allNotifications.length > 0) { allNotifications.forEach(function(notification) { %>
+  	<button type="button" class="list-group-item list-group-item-action text-center">
+  		<a href="/campgrounds/<%= notification.campgroundId %>">
+  			<%= notification.username %> created a new campground %>
+  		</a>
+  	</button>
+  <% });} else { %>
+    <h4 class="text-center alert alert-info">
+        You don't have any Notifications
+    </h4>
+<% } %>
+</div>
+
+<% include ../partials/footer %> 
