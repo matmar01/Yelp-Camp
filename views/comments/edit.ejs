@@ -5,7 +5,7 @@
         <h3 class="text-center mb-3">Edit this comment</h3>
     </div>
     <div class="col-md-5">
-        <form action="/campgrounds/<%= campground_id %>/comments/<%= comment._id %>?_method=PUT" method="POST">
+        <form action="/campgrounds/<%= campground_slug %>/comments/<%= comment._id %>?_method=PUT" method="POST">
             <div class="form-group">
                 <input class="form-control" type="text" name="comment[text]" value="<%= comment.text %>">
             </div>

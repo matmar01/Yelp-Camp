@@ -30,7 +30,10 @@
                 <img class="card-img-top" src="<%= campground.image %>" alt="<%= campground.name %>">
                 <div class="card-body">
                     <h5 class="card-title"><%= campground.name %></h5>
-                    <a href="/campgrounds/<%= campground._id %>" class="btn btn-md btn-primary">More info</a>
+                    <div class="mb-2">
+                        <span class="badge label-primary"><i class="fas fa-thumbs-up"></i> <%= campground.likes.length %>Like</span>
+                    </div>
+                    <a href="/campgrounds/<%= campground.slug %>" class="btn btn-md btn-primary">More info</a>
                 </div>
             </div>
         </div>    
